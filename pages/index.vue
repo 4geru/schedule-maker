@@ -11,7 +11,7 @@
             ref="dateInput"
             v-model="date"
             placeholder="開催日"
-            @input="updateDate"
+            @change="updateDate"
           />
         </label>
         <label>
@@ -20,6 +20,7 @@
             ref="titleInput"
             v-model="title"
             placeholder="google calendarのタイトル：「1200→12:00開始」「12:00-13:00→12:00開始-13:00終了」"
+            @input="updateTime"
           >
             <a-tooltip slot="suffix" title="google calendarのタイトルです。。数字が入っている場合は、開始時間-終了時間として判定されます">
               <a-icon type="info-circle" />
@@ -54,7 +55,7 @@
         </label>
         <label>
           予定の場所
-          <a-input ref="detailInput" v-model="address" placeholder="予定の場所">
+          <a-input ref="detailInput" v-model="address" placeholder="予定の場所" @input="updateCalendarUrl">
             <a-tooltip slot="suffix" title="住所や場所を登録できます">
               <a-icon type="info-circle" />
             </a-tooltip>
@@ -62,7 +63,7 @@
         </label>
         <label>
           URL
-          <a-input ref="detailInput" v-model="url" placeholder="URL">
+          <a-input ref="detailInput" v-model="url" placeholder="URL" @input="updateCalendarUrl">
             <a-tooltip slot="suffix" title="URLを追加することができます">
               <a-icon type="info-circle" />
             </a-tooltip>
@@ -72,7 +73,7 @@
         <label>
           Google calendar URL
           <a-textarea
-            :value="`${calendarUrl}`"
+            v-model="calendarUrl"
           />
         </label>
         <a-button
@@ -102,7 +103,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      title: '',
+      title: 'タイトル',
       date: moment().startOf('days'),
       detail: '',
       time: DEFAULT_TIME,
@@ -110,33 +111,32 @@ export default Vue.extend({
       endScheduledDate: moment().startOf('hours').add(DEFAULT_TIME, 'hours'),
       address: '',
       url: '',
-      calendarUrl: 'https://www.google.com/calendar/render?action=TEMPLATE&text=件名&dates=20200501T120000/20200501T140000&location=東京都千代田区霞ヶ関1-1-1&trp=true&trp=undefined&trp=true&sprop='
-    }
-  },
-  watch: {
-    startScheduledDate: function(val) {
-      this.calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=件名&dates=${this.startScheduledDate.format('YYYYMMDDThhmmss')}/20200501T140000&location=東京都千代田区霞ヶ関1-1-1&trp=true&trp=undefined&trp=true&sprop=`
+      calendarUrl: `https://www.google.com/calendar/render?action=TEMPLATE&text=タイトル&dates=${moment().startOf('hours').format('YYYYMMDDThhmmss')}/${moment().startOf('hours').add(DEFAULT_TIME, 'hours').format('YYYYMMDDThhmmss')}`
     }
   },
   methods: {
-    asyncCalendarUrl(): void {
-      this.calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=件名&dates=${this.startScheduledDate.format('YYYYMMDDThhmmss')}/20200501T140000&location=東京都千代田区霞ヶ関1-1-1&trp=true&trp=undefined&trp=true&sprop=`
-    },
     updateDate(): void {
       this.updateDateObject(this.startScheduledDate)
       this.updateDateObject(this.endScheduledDate)
-      console.log({called: 'called', startScheduledDate: this.startScheduledDate.toISOString(), endScheduledDate: this.endScheduledDate.toISOString()})
-    },
-    updateDateObject(date: moment): void {
-      date.year(this.date.year)
-      date.month(this.date.month)
-      date.day(this.date.day)
+      this.updateCalendarUrl()
     },
     updateTime(): void {
       this.convertTime()
+      this.updateCalendarUrl()
     },
-    convertTime(): number[] {
-      const res = this.detail.replace(/[^0-9]/g, '')
+    updateDateObject(m: moment): void {
+      m.year(this.date.years())
+      m.month(this.date.months())
+      m.date(this.date.dates())
+    },
+    updateCalendarUrl(): void{
+      this.calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${this.title}&dates=${this.startScheduledDate.format('YYYYMMDDThhmmss')}/${this.endScheduledDate.format('YYYYMMDDThhmmss')}`
+      if (this.detail) this.calendarUrl += `&details=${this.detail}`
+      if (this.address) this.calendarUrl += `&location=${this.address}`
+      if (this.url) this.calendarUrl += `&sprop=${this.url}`
+    },
+    convertTime(): void {
+      const res = this.title.replace(/[^0-9]/g, '') || this.detail.replace(/[^0-9]/g, '')
       const splitedTime = (res.match(/.{2}/g) || []).map(e => parseInt(e))
 
       if (splitedTime[0]) { this.startScheduledDate.hour(splitedTime[0]) }
@@ -144,10 +144,6 @@ export default Vue.extend({
 
       this.endScheduledDate.hour(this.startScheduledDate.hours() + (splitedTime[2] || parseInt(this.time)))
       this.endScheduledDate.minute(this.startScheduledDate.minutes() + (splitedTime[3] || (this.time % 1 * 60)))
-
-      this.calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=件名&dates=${this.startScheduledDate.format('YYYYMMDDThhmmss')}/20200501T140000&location=東京都千代田区霞ヶ関1-1-1&trp=true&trp=undefined&trp=true&sprop=`
-
-      return splitedTime
     }
   }
 })
