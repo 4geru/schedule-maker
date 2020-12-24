@@ -1,90 +1,117 @@
 <template>
-  <div class="container">
-    <div>
-      <h1 class="title">
-        schedule-maker
-      </h1>
-      <div class="links">
-        <label>
-          日付
-          <a-date-picker
-            ref="dateInput"
-            v-model="date"
-            placeholder="開催日"
-            @change="updateDate"
-          />
-        </label>
-        <label>
-          タイトル
-          <a-input
-            ref="titleInput"
-            v-model="title"
-            placeholder="google calendarのタイトル：「1200→12:00開始」「12:00-13:00→12:00開始-13:00終了」"
-            @input="updateTime"
-          >
-            <a-tooltip slot="suffix" title="google calendarのタイトルです。。数字が入っている場合は、開始時間-終了時間として判定されます">
-              <a-icon type="info-circle" />
-            </a-tooltip>
-          </a-input>
-        </label>
-        <label>
-          説明
-          <a-input
-            ref="detailInput"
-            v-model="detail"
-            placeholder="google calendarの説明：「1200→12:00開始」「12:00-13:00→12:00開始-13:00終了」"
-            @input="updateTime"
-          >
-            <a-tooltip slot="suffix" title="数字が入っている場合は、開始時間-終了時間として判定されます。タイトルに数字が入っている場合はタイトルの方が優先されます">
-              <a-icon type="info-circle" />
-            </a-tooltip>
-          </a-input>
-        </label>
-        <label>
-          所用時間
-          <a-input
-            ref="timeInput"
-            v-model="time"
-            placeholder="1.5→「開始時間から1時間30分の予定が作成されます」"
-            @input="updateTime"
-          >
-            <a-tooltip slot="suffix" title="開始時間のみ登録されている場合に登録されます。">
-              <a-icon type="info-circle" />
-            </a-tooltip>
-          </a-input>
-        </label>
-        <label>
-          予定の場所
-          <a-input ref="detailInput" v-model="address" placeholder="予定の場所" @input="updateCalendarUrl">
-            <a-tooltip slot="suffix" title="住所や場所を登録できます">
-              <a-icon type="info-circle" />
-            </a-tooltip>
-          </a-input>
-        </label>
-        <label>
-          URL
-          <a-input ref="detailInput" v-model="url" placeholder="URL" @input="updateCalendarUrl">
-            <a-tooltip slot="suffix" title="URLを追加することができます">
-              <a-icon type="info-circle" />
-            </a-tooltip>
-          </a-input>
-        </label>
-        <br />
-        <label>
-          Google calendar URL
-          <a-textarea
-            v-model="calendarUrl"
-          />
-        </label>
-        <a-button
-          type="primary"
-          icon="search"
-          @click="updateTime"
-        >
-          Search
-        </a-button>
-      </div>
-    </div>
+  <div>
+    <a-row>
+      <a-col :span="6" />
+      <a-col :span="12">
+        <div class="container">
+          <div>
+            <h1 class="title">
+              google-schedule-maker
+            </h1>
+            <div>
+              <div class="box">
+                <label>
+                  日付
+                  <a-date-picker
+                    ref="dateInput"
+                    v-model="date"
+                    placeholder="開催日"
+                    @change="updateDate"
+                  />
+                </label>
+              </div>
+              <div class="box">
+                <label>
+                  タイトル
+                  <a-input
+                    ref="titleInput"
+                    v-model="title"
+                    placeholder="google calendarのタイトル：「1200→12:00開始」「12:00-13:00→12:00開始-13:00終了」"
+                    @input="updateTime"
+                  >
+                    <a-tooltip slot="suffix" title="google calendarのタイトルです。。数字が入っている場合は、開始時間-終了時間として判定されます">
+                      <a-icon type="info-circle" />
+                    </a-tooltip>
+                  </a-input>
+                </label>
+              </div>
+              <div class="box">
+                <label>
+                  説明
+                  <a-input
+                    ref="detailInput"
+                    v-model="detail"
+                    placeholder="google calendarの説明：「1200→12:00開始」「12:00-13:00→12:00開始-13:00終了」"
+                    @input="updateTime"
+                  >
+                    <a-tooltip slot="suffix" title="数字が入っている場合は、開始時間-終了時間として判定されます。タイトルに数字が入っている場合はタイトルの方が優先されます">
+                      <a-icon type="info-circle" />
+                    </a-tooltip>
+                  </a-input>
+                </label>
+                <label class="box">
+                  所用時間
+                  <a-input
+                    ref="timeInput"
+                    v-model="time"
+                    placeholder="1.5→「開始時間から1時間30分の予定が作成されます」"
+                    @input="updateTime"
+                  >
+                    <a-tooltip slot="suffix" title="開始時間のみ登録されている場合に登録されます。">
+                      <a-icon type="info-circle" />
+                    </a-tooltip>
+                  </a-input>
+                </label>
+              </div>
+              <div class="box">
+                <label>
+                  予定の場所
+                  <a-input ref="detailInput" v-model="address" placeholder="予定の場所" @input="updateCalendarUrl">
+                    <a-tooltip slot="suffix" title="住所や場所を登録できます">
+                      <a-icon type="info-circle" />
+                    </a-tooltip>
+                  </a-input>
+                </label>
+              </div>
+              <div class="box">
+                <label>
+                  URL
+                  <a-input ref="detailInput" v-model="url" placeholder="URL" @input="updateCalendarUrl">
+                    <a-tooltip slot="suffix" title="URLを追加することができます">
+                      <a-icon type="info-circle" />
+                    </a-tooltip>
+                  </a-input>
+                </label>
+                <br />
+                <label class="box">
+                  Google calendar URL
+                  <a-textarea
+                    v-model="calendarUrl"
+                  />
+                </label>
+              </div>
+              <div class="box">
+                <a-button
+                  type="primary"
+                  icon="copy"
+                  @click="copyUrl"
+                >
+                  Copy
+                </a-button>
+                <a-button
+                  type="primary"
+                  icon="desktop"
+                  @click="openUrl"
+                >
+                  Open
+                </a-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a-col>
+      <a-col :span="6" />
+    </a-row>
   </div>
 </template>
 
@@ -130,7 +157,7 @@ export default Vue.extend({
       m.date(this.date.dates())
     },
     updateCalendarUrl(): void{
-      this.calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${this.title}&dates=${this.startScheduledDate.format('YYYYMMDDThhmmss')}/${this.endScheduledDate.format('YYYYMMDDThhmmss')}`
+      this.calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${this.title}&dates=${this.startScheduledDate.format('YYYYMMDDTHHmmss')}/${this.endScheduledDate.format('YYYYMMDDTHHmmss')}`
       if (this.detail) this.calendarUrl += `&details=${this.detail}`
       if (this.address) this.calendarUrl += `&location=${this.address}`
       if (this.url) this.calendarUrl += `&sprop=${this.url}`
@@ -145,6 +172,12 @@ export default Vue.extend({
       debugger
       this.endScheduledDate.hour(this.startScheduledDate.hours() + (splitedTime[2] || Math.floor(this.time)))
       this.endScheduledDate.minute(this.startScheduledDate.minutes() + (splitedTime[3] || (this.time % 1 * 60)))
+    },
+    copyUrl(): void {
+      navigator.clipboard.writeText(this.calendarUrl)
+    },
+    openUrl(): void {
+      window.open(this.calendarUrl)
     }
   }
 })
@@ -173,7 +206,7 @@ export default Vue.extend({
     sans-serif;
   display: block;
   font-weight: 300;
-  font-size: 100px;
+  font-size: 50px;
   color: #35495e;
   letter-spacing: 1px;
 }
@@ -186,11 +219,19 @@ export default Vue.extend({
   padding-bottom: 15px;
 }
 
-.links {
-  padding-top: 15px;
-}
-
 .ant-calendar-picker {
   width: 100%;
+}
+
+.ant-calendar-picker-input {
+  text-align: center;
+}
+
+.box {
+  margin-bottom: 10px;
+}
+
+.ant-col {
+  text-align: center;
 }
 </style>
