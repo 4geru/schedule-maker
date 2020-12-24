@@ -124,7 +124,7 @@ export default Vue.extend({
       this.convertTime()
       this.updateCalendarUrl()
     },
-    updateDateObject(m: moment): void {
+    updateDateObject(m: moment.Moment): void {
       m.year(this.date.years())
       m.month(this.date.months())
       m.date(this.date.dates())
@@ -142,7 +142,8 @@ export default Vue.extend({
       if (splitedTime[0]) { this.startScheduledDate.hour(splitedTime[0]) }
       if (splitedTime[1]) { this.startScheduledDate.minute(splitedTime[1]) }
 
-      this.endScheduledDate.hour(this.startScheduledDate.hours() + (splitedTime[2] || parseInt(this.time)))
+      debugger
+      this.endScheduledDate.hour(this.startScheduledDate.hours() + (splitedTime[2] || Math.floor(this.time)))
       this.endScheduledDate.minute(this.startScheduledDate.minutes() + (splitedTime[3] || (this.time % 1 * 60)))
     }
   }
